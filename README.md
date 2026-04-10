@@ -10,7 +10,7 @@
 ---
 
 ## 🌐 Live Deployment
-**Experience the live dashboard here:** 🚀 **[LIVE DEMO LINK]([https://heart-disease-classification-hm0y234zd-kamilperwezs-projects.vercel.app/predict])**
+**Experience the live dashboard here:** 🚀 **[LIVE DEMO LINK](https://heart-disease-classification-hm0y234zd-kamilperwezs-projects.vercel.app/)**
 
 ---
 
@@ -18,11 +18,11 @@
 
 | Neural Diagnostic Dashboard | 3D Anatomy Visualization |
 | :---: | :---: |
-| ![Dashboard Screenshot 1]([https://github.com/kamilperwez/Heart-Disease-Classification/blob/main/static/main.png]) | ![3D Heart Screenshot 2]([https://github.com/kamilperwez/Heart-Disease-Classification/blob/main/static/heart.png]) |
+| ![Dashboard Screenshot 1](https://github.com/kamilperwez/Heart-Disease-Classification/blob/main/static/main.png?raw=true) | ![3D Heart Screenshot 2](https://github.com/kamilperwez/Heart-Disease-Classification/blob/main/static/heart.png?raw=true) |
 
-| Live Risk Analysis | Explainable AI (XAI) Graphs |
-| :---: | :---: |
-| ![Risk Analysis 3]([https://github.com/kamilperwez/Heart-Disease-Classification/blob/main/static/dash.png]) |
+| Live Risk Analysis & XAI |
+| :---: |
+| ![Risk Analysis 3](https://github.com/kamilperwez/Heart-Disease-Classification/blob/main/static/dash.png?raw=true) |
 
 ---
 
@@ -53,9 +53,9 @@
 
 ```text
 /
-├── app.py              # Main Flask Entry Point
+├── app.py              # Main Flask Entry Point (Root)
 ├── models/             # Pickled ML Model & Scaler
-├── static/             # 3D GLB Models & Assets
+├── static/             # 3D GLB Models & Image Assets
 ├── templates/          # Glassmorphic UI (HTML)
-├── vercel.json         # Deployment Config
+├── vercel.json         # Deployment Configuration
 └── requirements.txt    # Serverless Dependencies
