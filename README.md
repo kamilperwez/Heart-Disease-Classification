@@ -1,44 +1,61 @@
 # ❤️ HeartHealth AI | Clinical Neural Diagnostics
 
-**HeartHealth AI** is a high-fidelity web application that leverages **Logistic Regression** and **Explainable AI (XAI)** to provide clinical-grade cardiovascular risk assessments. Trained on the UCI Heart Disease dataset, the system achieves **~86% accuracy** in real-time inference while providing users with interactive 3D anatomy and live environmental data integration.
+![Vercel Deployment](https://img.shields.io/badge/Vercel-Deployed-success?style=for-the-badge&logo=vercel)
+![Python Version](https://img.shields.io/badge/Python-3.9+-blue?style=for-the-badge&logo=python)
+![Framework](https://img.shields.io/badge/Flask-v3.0-red?style=for-the-badge&logo=flask)
+![License](https://img.shields.io/badge/License-MIT-yellow?style=for-the-badge)
+
+**HeartHealth AI** is a high-fidelity web application leveraging **Logistic Regression** and **Explainable AI (XAI)** to provide clinical-grade cardiovascular risk assessments. 
+
+---
+
+## 🌐 Live Deployment
+**Experience the live dashboard here:** 🚀 **[LIVE DEMO LINK]([https://heart-disease-classification-hm0y234zd-kamilperwezs-projects.vercel.app/predict])**
+
+---
+
+## 📸 Project Gallery
+
+| Neural Diagnostic Dashboard | 3D Anatomy Visualization |
+| :---: | :---: |
+| ![Dashboard Screenshot 1]([https://github.com/kamilperwez/Heart-Disease-Classification/blob/main/static/main.png]) | ![3D Heart Screenshot 2]([https://github.com/kamilperwez/Heart-Disease-Classification/blob/main/static/heart.png]) |
+
+| Live Risk Analysis | Explainable AI (XAI) Graphs |
+| :---: | :---: |
+| ![Risk Analysis 3]([https://github.com/kamilperwez/Heart-Disease-Classification/blob/main/static/dash.png]) |
 
 ---
 
 ## 🚀 Key Features
 
-* **Neural Diagnostics:** Real-time risk classification (Low, Mild, Moderate, High) using an optimized Logistic Regression pipeline.
-* **Explainable AI (XAI):** A custom **Feature Impact Analysis** engine that visualizes which biological factors (Age, Cholesterol, BP, etc.) most influenced the model's decision.
-* **3D Clinical Anatomy:** Native WebGL rendering of the human heart and cardiovascular system using Google’s `model-viewer`.
-* **Live Environmental Risk:** Integration with the **Open-Meteo API** to factor in atmospheric PM2.5 levels, adding environmental context to cardiac health.
-* **Holographic UI:** A futuristic "Medical Terminal" aesthetic featuring glassmorphism, live EKG pulse animations, and a scanning matrix.
-* **Clinical Report Engine:** A print-ready interface allowing users to export their diagnostic summary and neural insights as a professional PDF report.
+* **Neural Diagnostics:** Real-time risk classification (Low to High) using an optimized Logistic Regression pipeline.
+* **Explainable AI (XAI):** A custom **Feature Impact Analysis** engine visualizing which biological factors (Age, Chol, BP) moved the needle.
+* **3D Clinical Anatomy:** Native WebGL rendering of the heart using Google’s `model-viewer`.
+* **Live Environmental Risk:** Open-Meteo API integration tracking atmospheric PM2.5 levels.
+* **Holographic UI:** "Medical Terminal" aesthetic with glassmorphism and live EKG pulse animations.
 
 ---
 
 ## 🛠️ Technical Stack
 
-* **Frontend:** HTML5, CSS3 (Glassmorphism), Bootstrap 5, Chart.js.
-* **Backend:** Flask (Python).
-* **Machine Learning:** Scikit-Learn (Logistic Regression), NumPy, Pandas.
-* **3D Assets:** GLB Models (Google Model Viewer).
-* **Deployment:** Vercel (Serverless Functions).
+<p align="left">
+  <img src="https://img.shields.io/badge/python-3670A0?style=for-the-badge&logo=python&logoColor=ffdd54" />
+  <img src="https://img.shields.io/badge/flask-%23000.svg?style=for-the-badge&logo=flask&logoColor=white" />
+  <img src="https://img.shields.io/badge/scikit--learn-%23F7931E.svg?style=for-the-badge&logo=scikit-learn&logoColor=white" />
+  <img src="https://img.shields.io/badge/pandas-%23150458.svg?style=for-the-badge&logo=pandas&logoColor=white" />
+  <img src="https://img.shields.io/badge/chart.js-F5788D.svg?style=for-the-badge&logo=chart.js&logoColor=white" />
+  <img src="https://img.shields.io/badge/vercel-%23000000.svg?style=for-the-badge&logo=vercel&logoColor=white" />
+</p>
 
 ---
 
-## 📊 Model Pipeline & Logic
+## 📂 Directory Structure
 
-The model was meticulously trained to handle real-world clinical data and avoid common ML pitfalls:
-
-1.  **Linear Extrapolation:** By moving from SVC to **Logistic Regression**, the model accurately understands that lower age correlates with lower risk, even for ages below the training distribution.
-2.  **Feature Selection:** Dropped non-predictive variables (like `id`) to prevent data leakage and focused on 7 high-impact variables available in the UI.
-3.  **Probability Mapping:** Instead of a simple binary output, the system calculates probability distributions to assign clinical "Categories" (0-3).
-4.  **XAI Coefficients:** The app extracts model coefficients to explain which features "pushed" the probability higher or lower for each specific user.
-
----
-
-## 📦 Installation & Local Setup
-
-1. **Clone the repository:**
-   ```bash
-   git clone [https://github.com/yourusername/heart-health-ai.git](https://github.com/yourusername/heart-health-ai.git)
-   cd heart-health-ai
+```text
+/
+├── app.py              # Main Flask Entry Point
+├── models/             # Pickled ML Model & Scaler
+├── static/             # 3D GLB Models & Assets
+├── templates/          # Glassmorphic UI (HTML)
+├── vercel.json         # Deployment Config
+└── requirements.txt    # Serverless Dependencies
