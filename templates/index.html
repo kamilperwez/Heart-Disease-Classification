@@ -44,13 +44,28 @@
         .form-label { font-size: 0.8rem; font-weight: 700; color: #fecaca; }
         .form-control, .form-select { background: rgba(20, 5, 5, 0.6); border: 1px solid #7f1d1d; color: white; padding: 12px; }
         .form-control:focus, .form-select:focus { background: rgba(30, 5, 5, 0.9); border-color: #ef4444; color: white; box-shadow: 0 0 0 0.25rem rgba(239, 68, 68, 0.4); }
+        
+        /* --- NEW: MAKE PLACEHOLDERS BRIGHTER --- */
+        .form-control::placeholder {
+            color: #94a3b8 !important; /* Lighter slate color */
+            opacity: 0.9;
+            font-style: italic;
+        }
+
+        /* --- NEW: CUSTOM WHITE/RED DROPDOWN ARROW FOR DARK THEMES --- */
+        .form-select {
+            background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3e%3cpath fill='none' stroke='%23fca5a5' stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='m2 5 6 6 6-6'/%3e%3c/svg%3e");
+            background-repeat: no-repeat;
+            background-position: right 0.75rem center;
+            background-size: 16px 12px;
+        }
+
         .info-icon { color: #fca5a5; cursor: pointer; font-size: 0.9rem; margin-left: 5px; transition: 0.2s; }
         .info-icon:hover { color: #ffffff; }
 
         .tip-card { background: rgba(30, 10, 15, 0.8); border-left: 4px solid #ef4444; padding: 15px; margin-bottom: 12px; border-radius: 8px; font-size: 0.9rem; }
         .api-box { background: rgba(16, 185, 129, 0.1); border: 1px solid #10b981; border-radius: 8px; padding: 15px; display: flex; justify-content: space-between; align-items: center; }
         
-        /* RESTORED CONFUSION MATRIX CSS */
         .matrix-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 15px; }
         .matrix-cell { padding: 15px; border-radius: 8px; text-align: center; font-weight: bold; background: rgba(0,0,0,0.5); border: 1px solid rgba(255,100,100,0.1); }
         .true-pos { border-color: #ef4444; color: #ef4444; } .true-neg { border-color: #10b981; color: #10b981; }
@@ -126,7 +141,7 @@
                     <form action="/predict" method="post" class="row g-3">
                         <div class="col-md-6">
                             <label class="form-label">Age <i class="bi bi-info-circle info-icon" data-bs-toggle="tooltip" title="Range: 1 to 120 years. Age is a primary baseline risk factor."></i></label>
-                            <input type="number" name="age" class="form-control" min="1" max="120" value="{{ form_data.age if form_data else '' }}" required>
+                            <input type="number" name="age" class="form-control" min="1" max="120" placeholder="e.g. 45" value="{{ form_data.age if form_data else '' }}" required>
                         </div>
                         <div class="col-md-6">
                             <label class="form-label">Biological Sex <i class="bi bi-info-circle info-icon" data-bs-toggle="tooltip" title="Sex assigned at birth. Hormonal differences impact cardiac disease manifestation."></i></label>
