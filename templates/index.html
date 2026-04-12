@@ -130,14 +130,16 @@
                         </div>
                         <div class="col-md-6">
                             <label class="form-label">Biological Sex <i class="bi bi-info-circle info-icon" data-bs-toggle="tooltip" title="Sex assigned at birth. Hormonal differences impact cardiac disease manifestation."></i></label>
-                            <select name="sex" class="form-select">
+                            <select name="sex" class="form-select" required>
+                                <option value="" disabled hidden {% if not form_data %}selected{% endif %}>Select Sex</option>
                                 <option value="Male" {% if form_data and form_data.sex == 'Male' %}selected{% endif %}>Male</option>
                                 <option value="Female" {% if form_data and form_data.sex == 'Female' %}selected{% endif %}>Female</option>
                             </select>
                         </div>
                         <div class="col-12">
                             <label class="form-label">Chest Pain Category (CP) <i class="bi bi-info-circle info-icon" data-bs-toggle="tooltip" title="Typical: Heart-related. Atypical: Vague symptoms. Non-anginal: Musculoskeletal."></i></label>
-                            <select name="cp" class="form-select">
+                            <select name="cp" class="form-select" required>
+                                <option value="" disabled hidden {% if not form_data %}selected{% endif %}>Select Pain Type</option>
                                 <option value="typical angina" {% if form_data and form_data.cp == 'typical angina' %}selected{% endif %}>Typical Angina (Severe)</option>
                                 <option value="atypical angina" {% if form_data and form_data.cp == 'atypical angina' %}selected{% endif %}>Atypical Angina (Moderate)</option>
                                 <option value="non-anginal" {% if form_data and form_data.cp == 'non-anginal' %}selected{% endif %}>Non-Anginal (Mild)</option>
@@ -150,15 +152,15 @@
                         </div>
                         <div class="col-md-6">
                             <label class="form-label">Cholesterol <i class="bi bi-info-circle info-icon" data-bs-toggle="tooltip" title="Serum cholesterol (mg/dl). Optimal < 200. High > 240."></i></label>
-                            <input type="number" name="chol" class="form-control" min="100" max="600" value="{{ form_data.chol if form_data else '' }}" required>
+                            <input type="number" name="chol" class="form-control" min="100" max="600" placeholder="e.g. 195" value="{{ form_data.chol if form_data else '' }}" required>
                         </div>
                         <div class="col-md-6">
                             <label class="form-label">Max Heart Rate <i class="bi bi-info-circle info-icon" data-bs-toggle="tooltip" title="Max HR achieved during test (Thalch). Range: 60-220 bpm."></i></label>
-                            <input type="number" name="thalch" class="form-control" min="60" max="220" value="{{ form_data.thalch if form_data else '' }}" required>
+                            <input type="number" name="thalch" class="form-control" min="60" max="220" placeholder="e.g. 150" value="{{ form_data.thalch if form_data else '' }}" required>
                         </div>
                         <div class="col-md-6">
                             <label class="form-label">ST Dep. (Oldpeak) <i class="bi bi-info-circle info-icon" data-bs-toggle="tooltip" title="ECG ST depression induced by exercise vs rest. High value = blocked arteries."></i></label>
-                            <input type="number" step="0.1" name="oldpeak" class="form-control" min="0" max="6.2" value="{{ form_data.oldpeak if form_data else '0.0' }}">
+                            <input type="number" step="0.1" name="oldpeak" class="form-control" min="0" max="6.2" placeholder="e.g. 0.0" value="{{ form_data.oldpeak if form_data else '' }}">
                         </div>
                         <div class="col-12 mt-4">
                             <button type="submit" class="btn btn-danger w-100 py-3 fw-bold shadow-lg text-uppercase">

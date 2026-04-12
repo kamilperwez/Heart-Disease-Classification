@@ -7,7 +7,6 @@ import requests
 app = Flask(__name__)
 
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
-# Ensure your model paths are correct
 model = pickle.load(open(os.path.join(BASE_DIR, 'models', 'heart_model.pkl'), 'rb'))
 scaler = pickle.load(open(os.path.join(BASE_DIR, 'models', 'scaler.pkl'), 'rb'))
 
@@ -49,21 +48,78 @@ def get_detailed_analysis(category_num, risk_level, age, chol, oldpeak, trestbps
 
     return analysis
 
+# --- NEW: Reusable Prediction Function ---
+def run_prediction(age, sex, cp, chol, thalch, trestbps, oldpeak):
+    user_data = {
+        "Age": int(age),
+        "Biological Sex": sex,
+        "Chest Pain Type": cp.title(),
+        "Resting BP (mmHg)": int(trestbps),
+        "Cholesterol (mg/dl)": int(chol),
+        "Max Heart Rate": int(thalch),
+        "ST Dep. (Oldpeak)": float(oldpeak)
+    }
+
+    # 1. SCALE CONTINUOUS FEATURES
+    cont_features = np.array([[age, trestbps, chol, thalch, oldpeak]])
+    scaled_cont = scaler.transform(cont_features)
+    
+    # 2. CONSTRUCT 9-FEATURE VECTOR
+    features = list(scaled_cont[0]) 
+    dummies = [0] * 4 
+    
+    if sex == 'Male': dummies[0] = 1
+    
+    if cp == 'atypical angina': dummies[1] = 1
+    elif cp == 'non-anginal': dummies[2] = 1
+    elif cp == 'typical angina': dummies[3] = 1
+
+    full_vector = np.array([features + dummies])
+
+    # 3. PROBABILITY ENGINE
+    probability = model.predict_proba(full_vector)[0][1]
+
+    if probability < 0.25:
+        cat_num = 0
+        risk_level = "Low Risk / Stable"
+    elif probability < 0.50:
+        cat_num = 1
+        risk_level = "Mild Risk"
+    elif probability < 0.75:
+        cat_num = 2
+        risk_level = "Moderate Risk"
+    else:
+        cat_num = 3
+        risk_level = "High Risk"
+
+    # Generate custom tips
+    analysis = get_detailed_analysis(cat_num, risk_level, age, chol, oldpeak, trestbps)
+    
+    return analysis, user_data
+
+
 @app.route('/')
 def home():
     env_data = fetch_air_quality()
     
-    # 1. SET YOUR DEFAULT FORM VALUES HERE
-    default_data = {
-        "age": 45,
-        "sex": "Male",
-        "cp": "asymptomatic",
-        "chol": 195,
-        "thalch": 150,
-        "trestbps": 120,
-        "oldpeak": 0.0
-    }
-    return render_template('index.html', env=env_data, form_data=default_data)
+    # Run the model once with default dummy data
+    default_age, default_sex, default_cp = 45, 'Male', 'asymptomatic'
+    default_chol, default_thalch, default_trestbps, default_oldpeak = 195, 150, 120, 0.0
+    
+    try:
+        analysis, user_data = run_prediction(default_age, default_sex, default_cp, default_chol, default_thalch, default_trestbps, default_oldpeak)
+        
+        return render_template('index.html', 
+                               category=analysis["category"], 
+                               risk_level=analysis["risk_level"], 
+                               alert_class=analysis["color"], 
+                               tips=analysis["tips"],
+                               env=env_data,
+                               show_results=True,  # Show results immediately
+                               user_data=user_data,
+                               form_data=None)     # Pass None so the form remains EMPTY
+    except Exception as e:
+        return render_template('index.html', error=f"System Error: {str(e)}", env=env_data)
 
 @app.route('/predict', methods=['POST'])
 def predict():
@@ -79,61 +135,14 @@ def predict():
         trestbps = float(request.form['trestbps']) 
         oldpeak = float(request.form.get('oldpeak', 0.0)) 
 
-        # Save the submitted data so the form doesn't clear out after clicking predict
+        # Save submitted data to refill the form
         submitted_data = {
-            "age": int(age),
-            "sex": sex,
-            "cp": cp,
-            "chol": int(chol),
-            "thalch": int(thalch),
-            "trestbps": int(trestbps),
-            "oldpeak": oldpeak
+            "age": int(age), "sex": sex, "cp": cp,
+            "chol": int(chol), "thalch": int(thalch),
+            "trestbps": int(trestbps), "oldpeak": oldpeak
         }
 
-        user_data = {
-            "Age": int(age),
-            "Biological Sex": sex,
-            "Chest Pain Type": cp.title(),
-            "Resting BP (mmHg)": int(trestbps),
-            "Cholesterol (mg/dl)": int(chol),
-            "Max Heart Rate": int(thalch),
-            "ST Dep. (Oldpeak)": float(oldpeak)
-        }
-
-        # 1. SCALE CONTINUOUS FEATURES (5 features)
-        cont_features = np.array([[age, trestbps, chol, thalch, oldpeak]])
-        scaled_cont = scaler.transform(cont_features)
-        
-        # 2. CONSTRUCT 9-FEATURE VECTOR
-        features = list(scaled_cont[0]) 
-        dummies = [0] * 4 
-        
-        if sex == 'Male': dummies[0] = 1
-        
-        if cp == 'atypical angina': dummies[1] = 1
-        elif cp == 'non-anginal': dummies[2] = 1
-        elif cp == 'typical angina': dummies[3] = 1
-
-        full_vector = np.array([features + dummies])
-
-        # 3. PROBABILITY ENGINE: Map confidence to Category 0, 1, 2, 3
-        probability = model.predict_proba(full_vector)[0][1] # Gets the % chance of disease
-
-        if probability < 0.25:
-            cat_num = 0
-            risk_level = "Low Risk / Stable"
-        elif probability < 0.50:
-            cat_num = 1
-            risk_level = "Mild Risk"
-        elif probability < 0.75:
-            cat_num = 2
-            risk_level = "Moderate Risk"
-        else:
-            cat_num = 3
-            risk_level = "High Risk"
-
-        # Generate custom tips based on Category
-        analysis = get_detailed_analysis(cat_num, risk_level, age, chol, oldpeak, trestbps)
+        analysis, user_data = run_prediction(age, sex, cp, chol, thalch, trestbps, oldpeak)
 
         return render_template('index.html', 
                                category=analysis["category"], 
@@ -143,7 +152,7 @@ def predict():
                                env=env_data,
                                show_results=True,
                                user_data=user_data,
-                               form_data=submitted_data) # Pass the submitted data back to the form
+                               form_data=submitted_data) # Keep user's input in the form
 
     except Exception as e:
         return render_template('index.html', error=f"System Error: {str(e)}", env=fetch_air_quality())
