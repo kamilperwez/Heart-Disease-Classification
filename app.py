@@ -7,6 +7,7 @@ import requests
 app = Flask(__name__)
 
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+# Ensure your model paths are correct
 model = pickle.load(open(os.path.join(BASE_DIR, 'models', 'heart_model.pkl'), 'rb'))
 scaler = pickle.load(open(os.path.join(BASE_DIR, 'models', 'scaler.pkl'), 'rb'))
 
@@ -51,7 +52,18 @@ def get_detailed_analysis(category_num, risk_level, age, chol, oldpeak, trestbps
 @app.route('/')
 def home():
     env_data = fetch_air_quality()
-    return render_template('index.html', env=env_data)
+    
+    # 1. SET YOUR DEFAULT FORM VALUES HERE
+    default_data = {
+        "age": 45,
+        "sex": "Male",
+        "cp": "asymptomatic",
+        "chol": 195,
+        "thalch": 150,
+        "trestbps": 120,
+        "oldpeak": 0.0
+    }
+    return render_template('index.html', env=env_data, form_data=default_data)
 
 @app.route('/predict', methods=['POST'])
 def predict():
@@ -66,6 +78,17 @@ def predict():
         thalch = float(request.form['thalch'])
         trestbps = float(request.form['trestbps']) 
         oldpeak = float(request.form.get('oldpeak', 0.0)) 
+
+        # Save the submitted data so the form doesn't clear out after clicking predict
+        submitted_data = {
+            "age": int(age),
+            "sex": sex,
+            "cp": cp,
+            "chol": int(chol),
+            "thalch": int(thalch),
+            "trestbps": int(trestbps),
+            "oldpeak": oldpeak
+        }
 
         user_data = {
             "Age": int(age),
@@ -119,12 +142,11 @@ def predict():
                                tips=analysis["tips"],
                                env=env_data,
                                show_results=True,
-                               user_data=user_data)
+                               user_data=user_data,
+                               form_data=submitted_data) # Pass the submitted data back to the form
 
     except Exception as e:
         return render_template('index.html', error=f"System Error: {str(e)}", env=fetch_air_quality())
 
 if __name__ == "__main__":
     app.run(debug=True)
-
-app=app
